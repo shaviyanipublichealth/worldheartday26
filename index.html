@@ -652,12 +652,12 @@
     // ============================================================
     // TEXT ALONG CURVE (100% SOLID)
     // ============================================================
-    function drawSlantedTextAlongCurve(text, centerT, opts = {}) {
+function drawSlantedTextAlongCurve(text, centerT, opts = {}) {
       const {
         aboveOffset = 34,
         fontSize = 54,
         color = '#ffffff',
-        glow = 'rgba(0, 0, 0, 0.8)'
+        glow = 'rgba(0, 0, 0, 0.9)'
       } = opts;
 
       ctx.save();
@@ -665,9 +665,6 @@
       ctx.fillStyle = color;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.shadowColor = glow;
-      ctx.shadowBlur = 10;
-      ctx.shadowOffsetY = 3;
 
       const charWidths = [];
       let totalWidth = 0;
@@ -688,10 +685,21 @@
         const ny = -Math.cos(angle);
 
         ctx.save();
-        ctx.globalAlpha = 1.0;
+        ctx.globalAlpha = 1.0; // Force full solid opacity
         ctx.translate(pt.x + nx * aboveOffset, pt.y + ny * aboveOffset);
         ctx.rotate(angle);
+
+        // Draw shadow backdrop first, then solid text over it to eliminate overlapping alpha blending
+        ctx.shadowColor = glow;
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetY = 3;
         ctx.fillText(char, 0, 0);
+
+        // Second pass without shadow for absolute solid color core
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.fillText(char, 0, 0);
+
         ctx.restore();
 
         currentT = findTAtDistance(currentT, cWidth / 2);
