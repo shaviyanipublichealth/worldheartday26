@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="WHD Creator">
+  <meta name="theme-color" content="#d90429">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="screen-orientation" content="portrait">
+  <meta name="x5-orientation" content="portrait">
+  <title>WHD 2026 · Creator Studio</title>
+
+  <style>
+    @font-face {
+      font-family: 'AppSans';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/outfit:vf@5.3.0/latin-wght-normal.woff2') format('woff2-variations');
+      font-weight: 400 900; font-style: normal; font-display: block;
+    }
+    @font-face {
+      font-family: 'SloganFont';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/outfit:vf@5.3.0/latin-wght-normal.woff2') format('woff2-variations');
+      font-weight: 400 900; font-style: normal; font-display: block;
+    }
+    @font-face {
+      font-family: 'HashtagFont';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/montserrat:vf@5.3.0/latin-wght-normal.woff2') format('woff2-variations');
+      font-weight: 700 900; font-style: normal; font-display: block;
+    }
+    @font-face {
+      font-family: 'CustomHandwritten';
+      src: url('https://cdn.jsdelivr.net/fontsource/fonts/caveat@latest/latin-700-normal.woff2') format('woff2');
+      font-weight: 700; font-style: normal; font-display: block;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { height: 100%; width: 100%; overflow: hidden; touch-action: manipulation; background: #ffffff; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'AppSans', -apple-system, BlinkMacSystemFont, sans-serif;
+      height: 100%; width: 100%; overflow: hidden; position: fixed; inset: 0;
+      display: flex; flex-direction: column; color: #1a1a1a;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      overscroll-behavior: none; -webkit-overflow-scrolling: touch; background: #ffffff;
+    }
+
+    .font-probe {
+      position: absolute; left: -9999px; top: -9999px;
+      opacity: 0; pointer-events: none; visibility: hidden; white-space: nowrap;
+    }
+
+    .desktop-blocker, .expired-blocker {
+      position: fixed; inset: 0; z-index: 99999;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      padding: 30px; text-align: center; color: #ffffff;
+    }
+    .desktop-blocker { background: #8a0018; }
+    .expired-blocker { background: #6e0014; }
+    .desktop-blocker.active, .expired-blocker.active { display: flex; }
+    .desktop-blocker h2, .expired-blocker h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+    .desktop-blocker p, .expired-blocker p { font-size: 0.92rem; opacity: 0.9; max-width: 380px; line-height: 1.5; }
+
+    .blocker-icon-badge {
+      width: 82px; height: 82px; background: #ffffff;
+      border: 1.5px solid rgba(217, 4, 41, 0.2); border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); padding: 12px;
+    }
+    .blocker-icon-badge img { width: 100%; height: 100%; object-fit: contain; }
+
+    .app {
+      position: fixed; inset: 0; width: 100%; height: 100%;
+      display: flex; flex-direction: column; overflow: hidden;
+      background: linear-gradient(180deg, #fff8f9 0%, #ffffff 40%, #ffffff 100%);
+      z-index: 1;
+    }
+    .scroll-area {
+      flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+      padding: 6px 14px 24px; display: flex; flex-direction: column; gap: 10px;
+      overscroll-behavior: contain; background: transparent; scrollbar-width: none;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    .app-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; flex-shrink: 0; min-height: 44px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark {
+      width: 38px; height: 38px; border-radius: 10px; background: transparent;
+      display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0; flex-shrink: 0;
+    }
+    .brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+    .brand-text h1 { font-size: 1.05rem; font-weight: 900; letter-spacing: -0.02em; color: #7a0010; line-height: 1.1; }
+    .brand-text .sub { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #d90429; margin-top: 1px; }
+
+    .header-refresh-btn {
+      background: #fff0f3; border: 1.5px solid rgba(255, 45, 85, 0.25);
+      width: 38px; height: 38px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; color: #d90429;
+      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      box-shadow: 0 2px 6px rgba(217, 4, 41, 0.06);
+    }
+    .header-refresh-btn:active { transform: scale(0.92); background: #ffe3e8; }
+
+    .mode-tabs {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      background: #f0e6e8; padding: 5px; border-radius: 15px;
+      border: 1.5px solid rgba(217, 4, 41, 0.15); flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(217, 4, 41, 0.05);
+    }
+    .tab-btn {
+      background: #ffffff; border: 1.5px solid rgba(0, 0, 0, 0.06); padding: 13px 10px;
+      font-size: 0.98rem; font-weight: 900; color: #7a0010; border-radius: 12px;
+      cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1);
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      font-family: inherit; letter-spacing: 0.02em; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    }
+    .tab-btn#modeVideoBtn {
+      background: linear-gradient(135deg, #fff0f3, #ffe3e8);
+      border-color: rgba(255, 45, 85, 0.35); color: #b3001b;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #ff2d55, #d90429) !important; color: #ffffff !important;
+      border-color: transparent !important;
+      box-shadow: 0 6px 16px rgba(255, 45, 85, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transform: scale(1.02);
+    }
+    .tab-btn:active { transform: scale(0.97); }
+
+    .canvas-frame {
+      position: relative; width: 100%; aspect-ratio: 3 / 4;
+      border-radius: 20px; overflow: hidden; flex-shrink: 0;
+      background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 10px 28px rgba(217, 4, 41, 0.1), 0 2px 5px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      padding: 5px; box-sizing: border-box; max-height: 54vh; margin: 0 auto;
+    }
+    .canvas-frame .hearts-layer {
+      position: absolute; inset: 5px; border-radius: 15px; overflow: hidden; pointer-events: none; z-index: 1;
+    }
+    .canvas-frame .hearts-layer .heart {
+      position: absolute; top: -30px; font-size: 14px; opacity: 0;
+      animation: heartFall linear infinite; will-change: transform, opacity;
+      filter: drop-shadow(0 0 3px rgba(255, 100, 130, 0.5));
+    }
+    @keyframes heartFall {
+      0% { transform: translateY(-30px) translateX(0) rotate(0deg) scale(0.6); opacity: 0; }
+      12% { opacity: 0.9; } 50% { opacity: 0.7; } 88% { opacity: 0.35; }
+      100% { transform: translateY(110%) translateX(var(--drift, 24px)) rotate(340deg) scale(1); opacity: 0; }
+    }
+    .canvas-frame canvas {
+      position: relative; z-index: 2; width: 100%; height: 100%;
+      display: block; border-radius: 15px; touch-action: none;
+    }
+
+    .upload-section { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .upload-label-row { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+    .upload-label-row .label-text { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #7a0010; }
+    .upload-label-row .media-type-badge {
+      font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+      color: #d90429; background: rgba(255, 45, 85, 0.08); border: 1px solid rgba(255, 45, 85, 0.2);
+      padding: 3px 10px; border-radius: 7px;
+    }
+    .upload-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .upload-action-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 14px; border-radius: 14px;
+      border: 1.5px solid rgba(255, 45, 85, 0.25); background: #ffffff; color: #7a0010; font-weight: 900; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.2s; -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      font-family: inherit; text-align: center; letter-spacing: 0.01em; position: relative; overflow: hidden;
+      box-shadow: 0 3px 10px rgba(217, 4, 41, 0.06);
+    }
+    .upload-action-btn .icon-circle {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255, 45, 85, 0.12), rgba(217, 4, 41, 0.08));
+      border: 1px solid rgba(255, 45, 85, 0.2); display: flex; align-items: center; justify-content: center;
+      font-size: 15px; transition: transform 0.2s; flex-shrink: 0;
+    }
+    .upload-action-btn:active { transform: scale(0.97); background: #fff5f7; border-color: rgba(255, 45, 85, 0.4); }
+    .upload-action-btn:active .icon-circle { transform: scale(1.1); }
+    .upload-action-btn input[type="file"] { display: none; }
+
+    .zoom-mute-row { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .field-group { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .field-label {
+      font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #7a0010; padding: 0 4px; -webkit-user-select: none; user-select: none;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .field-label .value-badge {
+      font-size: 0.78rem; font-weight: 800; color: #d90429;
+      background: rgba(255, 45, 85, 0.08); padding: 3px 9px; border-radius: 6px;
+      letter-spacing: 0.02em; border: 1px solid rgba(255, 45, 85, 0.15);
+    }
+    .range-wrapper { width: 100%; padding: 0 2px; }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+      background: #f0e0e5; border-radius: 5px; outline: none; margin: 4px 0; touch-action: manipulation; cursor: pointer; border: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%;
+      background: linear-gradient(135deg, #ff2d55, #b3001b); cursor: pointer;
+      box-shadow: 0 3px 10px rgba(255, 45, 85, 0.35), 0 0 0 2px rgba(255, 45, 85, 0.1);
+      border: 2px solid #ffffff; transition: transform 0.12s; touch-action: manipulation;
+    }
+    input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.18); }
+    input[type="range"]::-moz-range-thumb {
+      width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #ff2d55, #b3001b);
+      cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 3px 10px rgba(255, 45, 85, 0.35);
+    }
+
+    .mute-toggle-btn {
+      background: #ffffff; border: 1.5px solid rgba(255, 45, 85, 0.3);
+      padding: 0 14px; height: 42px; border-radius: 12px; font-size: 0.88rem; font-weight: 800;
+      color: #d90429; cursor: pointer; transition: all 0.2s; font-family: inherit; flex-shrink: 0;
+      display: none; align-items: center; justify-content: center; gap: 6px; margin-top: 18px;
+      box-shadow: 0 2px 6px rgba(217, 4, 41, 0.05);
+    }
+    .mute-toggle-btn.visible { display: flex; animation: fadeIn 0.3s ease both; }
+    .mute-toggle-btn.muted { background: #d90429; color: #ffffff; border-color: #d90429; }
+    .mute-toggle-btn:active { transform: scale(0.95); }
+
+    .btn {
+      padding: 15px 14px; border-radius: 14px; border: none;
+      font-weight: 900; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      -webkit-appearance: none; appearance: none; color: #ffffff; flex-shrink: 0; font-family: inherit;
+      letter-spacing: 0.01em; position: relative; overflow: hidden; text-align: center;
+    }
+    .btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 55%);
+      pointer-events: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-shuffle {
+      background: linear-gradient(135deg, #ff758c, #ff416c);
+      box-shadow: 0 6px 16px rgba(255, 65, 108, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .btn-save {
+      background: linear-gradient(135deg, #2b9348, #55a630);
+      box-shadow: 0 6px 16px rgba(43, 147, 72, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .btn-share {
+      background: linear-gradient(135deg, #ff2d55, #b3001b);
+      box-shadow: 0 6px 16px rgba(255, 45, 85, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    .btn-share:disabled { opacity: 0.75; cursor: not-allowed; filter: grayscale(0.2); }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; flex-shrink: 0; }
+
+    .video-status {
+      font-size: 0.92rem; font-weight: 800; color: #b3001b; text-align: center;
+      background: #fff5f7; padding: 12px 14px; border-radius: 12px;
+      display: none; border: 1.5px solid rgba(255, 45, 85, 0.25); flex-shrink: 0;
+      line-height: 1.4; letter-spacing: 0.01em; box-shadow: 0 3px 8px rgba(255, 45, 85, 0.06);
+      align-items: center; justify-content: center; gap: 10px;
+    }
+    .video-status.visible { display: flex; animation: fadeIn 0.3s ease both; }
+    .spinner {
+      width: 20px; height: 20px; border: 3px solid rgba(255, 45, 85, 0.2);
+      border-top-color: #d90429; border-radius: 50%;
+      animation: spin 0.8s linear infinite; flex-shrink: 0; display: none;
+    }
+    .spinner.active { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .app-footer {
+      text-align: center; font-size: 0.72rem; color: #8a6a70;
+      font-weight: 700; padding: 6px 0 2px; flex-shrink: 0; letter-spacing: 0.04em;
+    }
+    .app-footer a { color: #d90429; text-decoration: none; font-weight: 900; }
+
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .scroll-area {
+        padding-bottom: calc(24px + env(safe-area-inset-bottom));
+        padding-top: calc(6px + env(safe-area-inset-top));
+      }
+      .app-header { padding-top: calc(3px + env(safe-area-inset-top)); }
+      .app-footer { padding-bottom: calc(2px + env(safe-area-inset-bottom)); }
+    }
+    .app, .app * { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    body { overscroll-behavior-y: none; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .scroll-area > * { animation: fadeIn 0.3s cubic-bezier(0.2, 0.9, 0.4, 1) both; }
+    .scroll-area > *:nth-child(2) { animation-delay: 0.02s; }
+    .scroll-area > *:nth-child(3) { animation-delay: 0.04s; }
+    .scroll-area > *:nth-child(4) { animation-delay: 0.06s; }
+    .scroll-area > *:nth-child(5) { animation-delay: 0.08s; }
+    .scroll-area > *:nth-child(6) { animation-delay: 0.10s; }
+    .scroll-area > *:nth-child(7) { animation-delay: 0.12s; }
+    .scroll-area > *:nth-child(8) { animation-delay: 0.14s; }
+  </style>
+</head>
+<body>
+
+  <!-- Invisible font warm-up probes -->
+  <div class="font-probe" style="font-family:'AppSans';font-weight:900;">Warm</div>
+  <div class="font-probe" style="font-family:'SloganFont';font-weight:900;">Warm</div>
+  <div class="font-probe" style="font-family:'CustomHandwritten';font-weight:700;">Warm</div>
+  <div class="font-probe" style="font-family:'HashtagFont';font-weight:900;">Warm</div>
+
+  <div class="desktop-blocker" id="desktopBlocker">
+    <div class="blocker-icon-badge">
+      <img src="https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/mascot_tr.png" alt="Mascot" crossorigin="anonymous">
+    </div>
+    <h2>Mobile Device Required</h2>
+    <p>The World Heart Day 2026 Creator Studio is optimized exclusively for mobile phones and tablets. Please open this link on your smartphone to create and share your campaign story!</p>
+  </div>
+
+  <div class="expired-blocker" id="expiredBlocker">
+    <div class="blocker-icon-badge">
+      <img src="https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/mascot_tr.png" alt="Mascot" crossorigin="anonymous">
+    </div>
+    <h2>Campaign Concluded</h2>
+    <p>The World Heart Day 2026 Creator Studio official campaign window has ended as of October 5, 2026. Thank you for participating and keeping the beat alive!</p>
+  </div>
+
+  <div class="app" id="app">
+    <div class="scroll-area" id="scrollArea">
+
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark">
+            <img src="https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/mascot_tr.png" alt="Mascot" crossorigin="anonymous">
+          </div>
+          <div class="brand-text">
+            <h1>WHD 2026 · Creator Studio</h1>
+            <div class="sub">Shaviyani Atoll Hospital</div>
+          </div>
+        </div>
+        <button class="header-refresh-btn" id="headerRefreshBtn" type="button" aria-label="Refresh studio" title="Refresh Studio">🔄</button>
+      </header>
+
+      <div class="mode-tabs" id="modeTabs">
+        <button class="tab-btn active" id="modeImageBtn" onclick="switchMode('image')" aria-label="Photo story mode">📷 Photo Story</button>
+        <button class="tab-btn" id="modeVideoBtn" onclick="switchMode('video')" aria-label="10 second story video mode">🎥 10s Story Video ⚡</button>
+      </div>
+
+      <div class="canvas-frame" id="canvasFrame">
+        <div class="hearts-layer" id="heartsLayer" aria-hidden="true"></div>
+        <canvas id="creatorCanvas" width="1080" height="1440"></canvas>
+      </div>
+
+      <div class="upload-section">
+        <div class="upload-label-row">
+          <span class="label-text">Add your media</span>
+          <span class="media-type-badge" id="mediaTypeBadge">Photo</span>
+        </div>
+        <div class="upload-actions">
+          <button class="upload-action-btn" id="cameraBtn" type="button">
+            <span class="icon-circle">📸</span>
+            <span id="cameraBtnText">Take Photo</span>
+          </button>
+          <button class="upload-action-btn" id="galleryBtn" type="button">
+            <span class="icon-circle">🖼️</span>
+            <span id="galleryBtnText">Choose Photo</span>
+          </button>
+        </div>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;">
+        <input type="file" id="galleryInput" accept="image/*" style="display:none;">
+      </div>
+
+      <div class="zoom-mute-row">
+        <div class="field-group">
+          <div class="field-label">
+            <span>Zoom & drag inside media</span>
+            <span class="value-badge" id="zoomValue">1.0×</span>
+          </div>
+          <div class="range-wrapper">
+            <input type="range" id="zoomRange" min="0.5" max="3.0" step="0.05" value="1">
+          </div>
+        </div>
+        <button class="mute-toggle-btn" id="muteToggleBtn" type="button">🔊 Mute</button>
+      </div>
+
+      <div class="video-status" id="videoStatus">
+        <span class="spinner" id="statusSpinner"></span>
+        <span id="statusText"></span>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-shuffle" id="shuffleSloganBtn" type="button">🔀 Shuffle</button>
+        <button class="btn btn-save" id="actionSaveBtn" type="button">💾 Save</button>
+        <button class="btn btn-share" id="actionShareBtn">📤 Share</button>
+      </div>
+
+      <div class="app-footer"><small>Developed by: Ahmed Shareef · Shaviyani Atoll Hospital</small></div>
+
+    </div>
+  </div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // ============================================================
+    // TIMELINE CONFIG (ms)
+    // ============================================================
+    const T = {
+      TOTAL:        10000,
+      BACKGROUND_IN:  400,
+      LOGO_IN:        400,
+      LOGO_IN_END:   1200,
+      TITLE_IN:      1000,
+      TITLE_IN_END:  1800,
+      SLOGAN_IN:     1600,
+      SLOGAN_IN_END: 2400,
+      CURVE_TAG_IN:  2200,
+      CURVE_TAG_END: 3000,
+      ORBIT_TAG_IN:  2800,
+      ORBIT_TAG_END: 3600,
+      MASCOT_IN:     3400,
+      MASCOT_IN_END: 4200,
+      IDLE_START:    4200,
+      SETTLE_START:  7500,
+      SETTLE_END:    8000,
+      FREEZE_END:   10000
+    };
+
+    const TARGET_FPS = 30;
+
+    // Random Entrance Effect Type for Media Clip (0: Zoom-In, 1: Slide-Up, 2: Rotate-Scale, 3: Soft Expand)
+    let currentClipEffectType = 0;
+
+    function randomizeClipEffect() {
+      currentClipEffectType = Math.floor(Math.random() * 4);
+    }
+
+    // ============================================================
+    // CAMPAIGN EXPIRY
+    // ============================================================
+    (function() {
+      if (new Date() > new Date('2026-10-06T00:00:00')) {
+        const el = document.getElementById('expiredBlocker');
+        if (el) el.classList.add('active');
+      }
+    })();
+
+    // ============================================================
+    // MOBILE GATE
+    // ============================================================
+    (function() {
+      const isTouch = (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+      const ua = (navigator.userAgent || navigator.vendor || window.opera || '').toLowerCase();
+      const isMobileUA = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+      if (!isMobileUA && !isTouch) {
+        const el = document.getElementById('desktopBlocker');
+        if (el) el.classList.add('active');
+      }
+    })();
+
+    // ============================================================
+    // HEARTS
+    // ============================================================
+    (function() {
+      const layer = document.getElementById('heartsLayer');
+      const chars = ['❤', '♥', '❤️️', '💗', '💓'];
+      const colors = [
+        'rgba(255, 160, 180, 0.85)', 'rgba(255, 120, 150, 0.8)',
+        'rgba(255, 190, 205, 0.75)', 'rgba(255, 100, 130, 0.7)',
+        'rgba(255, 210, 220, 0.7)'
+      ];
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'heart';
+        heart.textContent = chars[Math.floor(Math.random() * chars.length)];
+        heart.style.left = (Math.random() * 100) + '%';
+        heart.style.fontSize = (8 + Math.random() * 16) + 'px';
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.animationDuration = (8 + Math.random() * 12) + 's';
+        heart.style.animationDelay = '-' + (Math.random() * 12) + 's';
+        heart.style.setProperty('--drift', (Math.random() * 70 - 35).toFixed(0) + 'px');
+        layer.appendChild(heart);
+      }
+    })();
+
+    // ============================================================
+    // DOM REFS
+    // ============================================================
+    const canvas         = document.getElementById('creatorCanvas');
+    const ctx            = canvas.getContext('2d', { alpha: false });
+    const zoomRange      = document.getElementById('zoomRange');
+    const zoomValue      = document.getElementById('zoomValue');
+    const actionSaveBtn  = document.getElementById('actionSaveBtn');
+    const actionShareBtn = document.getElementById('actionShareBtn');
+    const videoStatus    = document.getElementById('videoStatus');
+    const statusSpinner  = document.getElementById('statusSpinner');
+    const statusText     = document.getElementById('statusText');
+    const modeImageBtn   = document.getElementById('modeImageBtn');
+    const modeVideoBtn   = document.getElementById('modeVideoBtn');
+    const mediaTypeBadge = document.getElementById('mediaTypeBadge');
+    const cameraBtn      = document.getElementById('cameraBtn');
+    const galleryBtn     = document.getElementById('galleryBtn');
+    const cameraBtnText  = document.getElementById('cameraBtnText');
+    const galleryBtnText = document.getElementById('galleryBtnText');
+    const cameraInput    = document.getElementById('cameraInput');
+    const galleryInput   = document.getElementById('galleryInput');
+    const shuffleSloganBtn = document.getElementById('shuffleSloganBtn');
+    const headerRefreshBtn = document.getElementById('headerRefreshBtn');
+    const muteToggleBtn  = document.getElementById('muteToggleBtn');
+
+    headerRefreshBtn.addEventListener('click', () => window.location.reload());
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let userImage = null;
+    let userVideo = null;
+    let photoScale = 1;
+    let photoOffsetX = 0;
+    let photoOffsetY = 0;
+    let currentMode = 'image';
+
+    let storyClockMs = 0;
+    let idleClockMs = 0;
+    let lastFrameTimestamp = 0;
+    let animationId = null;
+    let isRecording = false;
+
+    let lastRecordedVideoBlob = null;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialPinchDist = null;
+    let initialScale = 1;
+
+    // ============================================================
+    // SLOGANS
+    // ============================================================
+    const whdSlogans = [
+      "USE HEART FOR ACTION.", "USE HEART TO CONNECT.", "BEAT CVD, USE HEART.",
+      "POWER YOUR LIFE, USE HEART.", "KNOW RISK, TAKE ACTION.", "EMPOWER YOUR HEART.",
+      "TAKE CHARGE OF YOUR HEART.", "FUEL YOUR LIFE WITH HEART.", "MAKE EVERY BEAT COUNT.",
+      "STEP UP FOR HEART HEALTH.", "PROTECT EVERY HEART.", "HEART HEALTH FOR ALL.",
+      "CARE FOR YOUR HEART TODAY.", "YOUR HEART, YOUR FUTURE.", "HEALTHY HABITS, HEALTHY HEART.",
+      "NURTURE YOUR HEART DAILY.", "PREVENT DISEASE, PROTECT LIFE.", "DEFEND YOUR HEART'S RHYTHM.",
+      "EARLY AWARENESS SAVES LIVES.", "KEEP YOUR HEART STRONG.", "STRONG HEART, STRONG COMMUNITY.",
+      "SHARE THE LOVE, SAVE A HEART.", "UNITED FOR HEART HEALTH.", "COMMUNITY CARE, HEART AWARE.",
+      "PULSE OF LIFE, PROTECT IT TOGETHER.", "CONNECT THROUGH COMPASSION.", "BUILD A HEART-HEALTHY WORLD.",
+      "STAND TOGETHER, BEAT CVD.", "HEARTBEATS CONNECT US ALL.", "SUPPORT A HEALTHY HEART JOURNEY.",
+      "LIVE LIFE WITH HEART.", "SMALL STEPS, BIG HEART.", "CHOOSE HEALTH, BEAT CVD.",
+      "KEEP THE BEAT ALIVE.", "HEARTS ARE FOR LIVING.", "LOVE YOUR HEART UNCONDITIONALLY.",
+      "BEAT THE ODDS, LOVE YOUR HEART.", "LIVE BOLDLY, LOVE DEEPLY.", "YOUR HEART DESERVES THE BEST.",
+      "BEAT WITH PURPOSE."
+    ];
+    let currentSloganIndex = Math.floor(Math.random() * whdSlogans.length);
+
+    shuffleSloganBtn.addEventListener('click', () => {
+      let n;
+      do { n = Math.floor(Math.random() * whdSlogans.length); }
+      while (n === currentSloganIndex && whdSlogans.length > 1);
+      currentSloganIndex = n;
+      if (currentMode === 'image') scheduleDrawOnce();
+    });
+
+    // ============================================================
+    // ASSETS
+    // ============================================================
+    const newLogoImg = new Image();
+    newLogoImg.crossOrigin = 'anonymous';
+    newLogoImg.onload = () => { if (currentMode === 'image') scheduleDrawOnce(); };
+    newLogoImg.src = 'https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/shah_whd_logo.png';
+
+    const mascotTrImg = new Image();
+    mascotTrImg.crossOrigin = 'anonymous';
+    mascotTrImg.onload = () => { if (currentMode === 'image') scheduleDrawOnce(); };
+    mascotTrImg.src = 'https://raw.githubusercontent.com/AhmedSharyph/whd-2026/main/mascot_tr.png';
+
+    (async function tryLoadRandomMascot() {
+      try {
+        const res = await fetch('https://api.github.com/repos/AhmedSharyph/whd-2026/contents/img',
+          { headers: { 'Accept': 'application/vnd.github+json' } });
+        if (!res.ok) return;
+        const files = await res.json();
+        if (!Array.isArray(files)) return;
+        const images = files.filter(f => f.type === 'file' && /\.(png|jpg|jpeg|webp|svg)$/i.test(f.name));
+        if (!images.length) return;
+        const pick = images[Math.floor(Math.random() * images.length)];
+        const probe = new Image();
+        probe.crossOrigin = 'anonymous';
+        probe.onload = () => {
+          mascotTrImg.src = pick.download_url;
+          if (currentMode === 'image') scheduleDrawOnce();
+        };
+        probe.src = pick.download_url;
+      } catch (_) {}
+    })();
+
+    // ============================================================
+    // EASING HELPERS
+    // ============================================================
+    const clamp01 = v => Math.max(0, Math.min(1, v));
+    const span = (v, start, end) => clamp01((v - start) / (end - start));
+
+    const easeInOut = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+    const easeOutBack = (t, s = 1.70158) => 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2);
+    const easeOutElastic = t => {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      const p = 0.4;
+      return Math.pow(2, -10 * t) * Math.sin((t - p / 4) * (2 * Math.PI) / p) + 1;
+    };
+    const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+    const easeInCubic = t => t * t * t;
+
+    // ============================================================
+    // BEZIER CURVE
+    // ============================================================
+    const CURVE = {
+      P0: { x: 0,   y: 620 },
+      P1: { x: 360, y: 380 },
+      P2: { x: 720, y: 260 },
+      P3: { x: 1080, y: 400 }
+    };
+    function bezierPoint(t) {
+      const mt = 1 - t;
+      const { P0, P1, P2, P3 } = CURVE;
+      return {
+        x: mt*mt*mt*P0.x + 3*mt*mt*t*P1.x + 3*mt*t*t*P2.x + t*t*t*P3.x,
+        y: mt*mt*mt*P0.y + 3*mt*mt*t*P1.y + 3*mt*t*t*P2.y + t*t*t*P3.y
+      };
+    }
+    function bezierTangentAngle(t) {
+      const mt = 1 - t;
+      const { P0, P1, P2, P3 } = CURVE;
+      const dx = 3*mt*mt*(P1.x-P0.x) + 6*mt*t*(P2.x-P1.x) + 3*t*t*(P3.x-P2.x);
+      const dy = 3*mt*mt*(P1.y-P0.y) + 6*mt*t*(P2.y-P1.y) + 3*t*t*(P3.y-P2.y);
+      return Math.atan2(dy, dx);
+    }
+    function findTAtDistance(centerT, distancePx) {
+      const centerPt = bezierPoint(centerT);
+      const forward = distancePx >= 0;
+      const absDist = Math.abs(distancePx);
+      const step = 0.001;
+      let t = centerT, acc = 0, prev = centerPt;
+      for (let i = 0; i < 1000; i++) {
+        t += forward ? step : -step;
+        if (t < 0.001 || t > 0.999) break;
+        const pt = bezierPoint(t);
+        acc += Math.hypot(pt.x - prev.x, pt.y - prev.y);
+        prev = pt;
+        if (acc >= absDist) break;
+      }
+      return Math.max(0.01, Math.min(0.99, t));
+    }
+
+    const PRIMARY_FONT = 'AppSans';
+    const SLOGAN_FONT  = 'SloganFont';
+    const HASHTAG_FONT = 'CustomHandwritten';
+
+    // ============================================================
+    // TEXT ALONG CURVE (100% SOLID)
+    // ============================================================
+    function drawSlantedTextAlongCurve(text, centerT, opts = {}) {
+      const {
+        aboveOffset = 34,
+        fontSize = 54,
+        color = '#ffffff',
+        glow = 'rgba(0, 0, 0, 0.8)'
+      } = opts;
+
+      ctx.save();
+      ctx.font = `700 ${fontSize}px "${HASHTAG_FONT}", cursive, sans-serif`;
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = glow;
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 3;
+
+      const charWidths = [];
+      let totalWidth = 0;
+      for (let i = 0; i < text.length; i++) {
+        const w = ctx.measureText(text[i]).width;
+        charWidths.push(w);
+        totalWidth += w;
+      }
+
+      let currentT = findTAtDistance(centerT, -totalWidth / 2);
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const cWidth = charWidths[i];
+        currentT = findTAtDistance(currentT, cWidth / 2);
+        const pt = bezierPoint(currentT);
+        const angle = bezierTangentAngle(currentT);
+        const nx = Math.sin(angle);
+        const ny = -Math.cos(angle);
+
+        ctx.save();
+        ctx.globalAlpha = 1.0;
+        ctx.translate(pt.x + nx * aboveOffset, pt.y + ny * aboveOffset);
+        ctx.rotate(angle);
+        ctx.fillText(char, 0, 0);
+        ctx.restore();
+
+        currentT = findTAtDistance(currentT, cWidth / 2);
+      }
+      ctx.restore();
+    }
+
+    // ============================================================
+    // BACKGROUND
+    // ============================================================
+    function drawBackground(w, h, bloom = 1) {
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+      bgGrad.addColorStop(0.00, '#8a0018');
+      bgGrad.addColorStop(0.15, '#b3001b');
+      bgGrad.addColorStop(0.35, '#d90429');
+      bgGrad.addColorStop(0.55, '#d90429');
+      bgGrad.addColorStop(0.75, '#a80020');
+      bgGrad.addColorStop(1.00, '#6e0014');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      const glowR = w * (0.35 + bloom * 0.55);
+      const glowA = 0.15 + bloom * 0.25;
+      const glow = ctx.createRadialGradient(w * 0.30, h * 0.06, 0, w * 0.30, h * 0.06, glowR);
+      glow.addColorStop(0,    `rgba(255, 120, 150, ${glowA})`);
+      glow.addColorStop(0.45, `rgba(255, 45, 85, ${glowA * 0.35})`);
+      glow.addColorStop(1,    'rgba(255, 45, 85, 0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, w, h * 0.5);
+
+      ctx.save();
+      ctx.globalAlpha = 0.06;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      const patternY = 220, patternStep = 90;
+      for (let row = 0; row < 3; row++) {
+        const yBase = patternY + row * patternStep;
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 6) {
+          const cycle = 180;
+          const local = (x + row * 40) % cycle;
+          let dy = 0;
+          if (local > 20 && local < 40) dy = -6 * Math.sin(((local - 20) / 20) * Math.PI);
+          else if (local >= 50 && local < 58) dy = 6;
+          else if (local >= 58 && local < 68) dy = -32 * Math.sin(((local - 58) / 10) * Math.PI);
+          else if (local >= 68 && local < 76) dy = 10 * Math.sin(((local - 68) / 8) * Math.PI);
+          else if (local >= 90 && local < 120) dy = -5 * Math.sin(((local - 90) / 30) * Math.PI);
+          const y = yBase + dy;
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      const bottomGrad = ctx.createLinearGradient(0, h - 140, 0, h);
+      bottomGrad.addColorStop(0, '#b3001b');
+      bottomGrad.addColorStop(0.5, '#8a0018');
+      bottomGrad.addColorStop(1, '#5a0010');
+      ctx.fillStyle = bottomGrad;
+      ctx.fillRect(0, h - 140, w, 140);
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, h - 140);
+      ctx.lineTo(w, h - 140);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ============================================================
+    // SCHEDULED SINGLE DRAW (photo mode)
+    // ============================================================
+    let drawScheduled = false;
+    function scheduleDrawOnce() {
+      if (animationId) return;
+      if (drawScheduled) return;
+      drawScheduled = true;
+      requestAnimationFrame(() => {
+        drawScheduled = false;
+        renderFrame(T.SETTLE_END + 1, 0);
+      });
+    }
+
+    // ============================================================
+    // IDLE MOTION HELPERS
+    // ============================================================
+    function idleWave(tSec, freq, phase = 0) {
+      return Math.sin(tSec * Math.PI * 2 * freq + phase);
+    }
+
+    function idleEnergy(storyMs) {
+      const rampIn  = span(storyMs, T.IDLE_START - 400, T.IDLE_START + 200);
+      const rampOut = 1 - span(storyMs, T.SETTLE_START, T.SETTLE_END);
+      return clamp01(Math.min(rampIn, rampOut));
+    }
+
+    // ============================================================
+    // MAIN RENDER
+    // ============================================================
+    function renderFrame(storyMs, idleMs = 0) {
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = 1.0;
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = 'transparent';
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      const tSec = idleMs / 1000;
+      const energy = idleEnergy(storyMs);
+
+      // ---- 1. Background ----
+      const bloom = easeOutCubic(span(storyMs, 0, T.BACKGROUND_IN));
+      drawBackground(w, h, bloom);
+
+      // ---- 2. Media Clip with Random Entrance Animation (0s to 3500ms) ----
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(CURVE.P0.x, CURVE.P0.y);
+      ctx.bezierCurveTo(CURVE.P1.x, CURVE.P1.y, CURVE.P2.x, CURVE.P2.y, CURVE.P3.x, CURVE.P3.y);
+      ctx.lineTo(CURVE.P3.x, h - 140);
+      ctx.lineTo(CURVE.P0.x, h - 140);
+      ctx.closePath();
+      ctx.clip();
+
+      const clipProgress = easeOutBack(span(storyMs, 200, 3500), 1.2);
+      const clipInAlpha = clamp01(span(storyMs, 200, 1500) * 1.5);
+
+      let clipScaleMod = 1;
+      let clipOffsetYMod = 0;
+      let clipRotateMod = 0;
+
+      if (clipProgress < 1) {
+        if (currentClipEffectType === 0) {
+          // Effect 0: Zoom-In Pop
+          clipScaleMod = 0.5 + 0.5 * clipProgress;
+        } else if (currentClipEffectType === 1) {
+          // Effect 1: Dramatic Slide-Up from Bottom
+          clipOffsetYMod = (1 - clipProgress) * 350;
+        } else if (currentClipEffectType === 2) {
+          // Effect 2: Rotate and Scale Spring
+          clipScaleMod = 0.7 + 0.3 * clipProgress;
+          clipRotateMod = (1 - clipProgress) * 0.12;
+        } else {
+          // Effect 3: Soft Expand
+          clipScaleMod = 0.85 + 0.15 * clipProgress;
+        }
+      }
+
+      const mediaZoom = (1 + easeOutCubic(span(storyMs, 0, 4000)) * 0.06) * clipScaleMod;
+
+      ctx.save();
+      if (clipRotateMod !== 0) {
+        ctx.translate(w / 2, h / 2);
+        ctx.rotate(clipRotateMod);
+        ctx.translate(-w / 2, -h / 2);
+      }
+      ctx.globalAlpha = (currentMode === 'video' && clipProgress < 1) ? clipInAlpha : 1.0;
+
+      if (currentMode === 'image') {
+        if (userImage) {
+          const iw = userImage.naturalWidth || userImage.width;
+          const ih = userImage.naturalHeight || userImage.height;
+          const baseScale = Math.max((w * 0.8) / iw, (h * 0.6) / ih);
+          const drawWidth  = iw * baseScale * photoScale * mediaZoom;
+          const drawHeight = ih * baseScale * photoScale * mediaZoom;
+          const x = (w / 2) - (drawWidth / 2)  + photoOffsetX;
+          const y = (h / 2) - (drawHeight / 2) + photoOffsetY + clipOffsetYMod;
+          ctx.drawImage(userImage, x, y, drawWidth, drawHeight);
+        } else {
+          ctx.fillStyle = '#f5f5f7';
+          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = '#d90429';
+          ctx.font = `bold 42px "${PRIMARY_FONT}", sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText('Tap below to add your photo', w / 2, h / 2);
+        }
+      } else {
+        if (userVideo && userVideo.readyState >= 2 && userVideo.videoWidth) {
+          const vw = userVideo.videoWidth;
+          const vh = userVideo.videoHeight;
+          const baseScale = Math.max((w * 0.8) / vw, (h * 0.6) / vh);
+          const drawWidth  = vw * baseScale * photoScale * mediaZoom;
+          const drawHeight = vh * baseScale * photoScale * mediaZoom;
+          const vx = (w / 2) - (drawWidth / 2)  + photoOffsetX;
+          const vy = (h / 2) - (drawHeight / 2) + photoOffsetY + clipOffsetYMod;
+          ctx.drawImage(userVideo, vx, vy, drawWidth, drawHeight);
+        } else {
+          ctx.fillStyle = '#f5f5f7';
+          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = '#b3001b';
+          ctx.font = `bold 42px "${PRIMARY_FONT}", sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText('Tap below to add your video clip', w / 2, h / 2);
+        }
+      }
+      ctx.restore();
+      ctx.restore();
+
+      // ============================================================
+      // 3. TITLE (100% SOLID)
+      // ============================================================
+      const titleBobX = idleWave(tSec, 0.17, 1.1) * 4 * energy;
+      const titleBobY = idleWave(tSec, 0.22) * 8 * energy;
+      const titleScale = 1 + idleWave(tSec, 0.30, 0.5) * 0.014 * energy;
+
+      ctx.save();
+      ctx.globalAlpha = 1.0;
+
+      const pivotX = 45, pivotY = 24 + 195 / 2;
+      ctx.translate(pivotX, pivotY);
+      ctx.scale(titleScale, titleScale);
+      ctx.translate(-pivotX, -pivotY);
+      ctx.translate(titleBobX, titleBobY);
+
+      const hasLogo = newLogoImg.complete && newLogoImg.naturalHeight !== 0;
+      const logoX = 45, logoY = 24, logoTargetHeight = 195;
+
+      if (hasLogo) {
+        const lAspect = newLogoImg.width / newLogoImg.height;
+        const logoWidth = logoTargetHeight * lAspect;
+
+        const logoIn = easeOutElastic(span(storyMs, T.LOGO_IN, T.LOGO_IN_END));
+        const logoDropY = (1 - logoIn) * -180;
+        const logoScale = 0.6 + 0.4 * logoIn;
+
+        const glowIntensity = 14 + (idleWave(tSec, 0.45) * 10 + 10) * energy + (1 - energy) * 10;
+
+        ctx.save();
+        ctx.translate(logoX + logoWidth / 2, logoY + logoTargetHeight / 2);
+        ctx.scale(logoScale, logoScale);
+        ctx.translate(-(logoX + logoWidth / 2), -(logoY + logoTargetHeight / 2));
+        ctx.translate(0, logoDropY);
+
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.95)';
+        ctx.shadowBlur = glowIntensity;
+        ctx.drawImage(newLogoImg, logoX, logoY, logoWidth, logoTargetHeight);
+        ctx.drawImage(newLogoImg, logoX, logoY, logoWidth, logoTargetHeight);
+        ctx.restore();
+
+        const textStartX = logoX + logoWidth + 20;
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = `900 36px "${PRIMARY_FONT}", sans-serif`;
+
+        const lines = [
+          { text: 'WORLD',  y: 68  },
+          { text: 'HEART',  y: 110 },
+          { text: 'DAY 26', y: 152 }
+        ];
+        lines.forEach((line) => {
+          ctx.save();
+          ctx.globalAlpha = 1.0;
+          ctx.fillText(line.text, textStartX, line.y);
+          ctx.restore();
+        });
+
+        ctx.save();
+        ctx.globalAlpha = 1.0;
+        ctx.font = `900 22px "${PRIMARY_FONT}", sans-serif`;
+        const dateStr = "29 SEP";
+        const targetWidth = ctx.measureText("HEART").width;
+        const naturalW = ctx.measureText(dateStr).width;
+        const scaleX = targetWidth / naturalW;
+        ctx.translate(textStartX, 180);
+        ctx.scale(scaleX, 1);
+        ctx.fillText(dateStr, 0, 0);
+        ctx.restore();
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = `900 36px "${PRIMARY_FONT}", sans-serif`;
+        ctx.fillText('WORLD',   50, 68);
+        ctx.fillText('HEART',   50, 110);
+        ctx.fillText('DAY 26',  50, 152);
+      }
+
+      ctx.restore();
+
+      // ============================================================
+      // 4. SLOGAN (100% SOLID)
+      // ============================================================
+      const sloganDriftX = idleWave(tSec, 0.16) * 26 * energy;
+      const sloganDriftY = idleWave(tSec, 0.24, 1.7) * 14 * energy;
+
+      const sloganBaseX = 500 + sloganDriftX;
+      const sloganBaseY = 85  + sloganDriftY;
+
+      ctx.save();
+      ctx.globalAlpha = 1.0;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `900 48px "${SLOGAN_FONT}", sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      wrapText(ctx, whdSlogans[currentSloganIndex], sloganBaseX, sloganBaseY, 540, 56);
+      ctx.restore();
+
+      // ============================================================
+      // 5a. #DontMissABeat (100% SOLID)
+      // ============================================================
+      const curveTag = '#DontMissABeat';
+      const curveTravel = idleWave(tSec, 0.20, 0.4) * 0.045 * energy;
+      const curveBaseT = 0.20;
+      const curveOffsetBreath = idleWave(tSec, 0.55, 2.0) * 6 * energy;
+
+      ctx.save();
+      ctx.globalAlpha = 1.0;
+      drawSlantedTextAlongCurve(curveTag, curveBaseT + curveTravel, {
+        aboveOffset: 34 + curveOffsetBreath,
+        fontSize: 70,
+        color: '#ffffff'
+      });
+      ctx.restore();
+
+      // ============================================================
+      // 5b. #WorldHeartDay (100% SOLID)
+      // ============================================================
+      const orbitX = idleWave(tSec, 0.19) * 22 * energy;
+      const orbitY = idleWave(tSec, 0.27, 0.9) * 12 * energy;
+
+      ctx.save();
+      ctx.globalAlpha = 1.0;
+      ctx.font = `700 70px "${HASHTAG_FONT}", cursive, sans-serif`;
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 3;
+      ctx.fillText('#WorldHeartDay', 840 + orbitX, 300 + orbitY);
+      ctx.restore();
+
+      // ============================================================
+      // 6. ECG
+      // ============================================================
+      ctx.save();
+      ctx.globalAlpha = 1.0;
+      drawContinuousNormalEcg();
+      ctx.restore();
+
+      // ============================================================
+      // 7. MASCOT (100% SOLID)
+      // ============================================================
+      if (mascotTrImg.complete && mascotTrImg.naturalHeight !== 0) {
+        const targetHeight = 230;
+        const aspect = mascotTrImg.width / mascotTrImg.height;
+        const targetWidth = targetHeight * aspect;
+        const mascotX = w - targetWidth - 20;
+        const mascotY = h - targetHeight - 10;
+
+        const breathe = 1 + idleWave(tSec, 0.35) * 0.06 * energy;
+        const swayX   = idleWave(tSec, 0.21, 0.3) * 8 * energy;
+
+        const currentW = targetWidth  * breathe;
+        const currentH = targetHeight * breathe;
+        const curX = mascotX + (targetWidth  - currentW) / 2 + swayX;
+        const curY = mascotY + (targetHeight - currentH) / 2;
+
+        ctx.save();
+        ctx.globalAlpha = 1.0;
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 12;
+
+        const offsets = [
+          {dx:-3,dy:0},{dx:3,dy:0},{dx:0,dy:-3},{dx:0,dy:3},
+          {dx:-2,dy:-2},{dx:2,dy:2},{dx:-2,dy:2},{dx:2,dy:-2}
+        ];
+        for (const o of offsets) {
+          ctx.drawImage(mascotTrImg, curX + o.dx, curY + o.dy, currentW, currentH);
+        }
+        ctx.shadowBlur = 0;
+        ctx.drawImage(mascotTrImg, curX, curY, currentW, currentH);
+        ctx.restore();
+      }
+    }
+
+    // ============================================================
+    // ECG
+    // ============================================================
+    function drawContinuousNormalEcg() {
+      ctx.save();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.shadowColor = 'rgba(255,255,255,0.9)';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+
+      const ecgY = 1370;
+      const timeShift = idleClockMs * 0.4;
+
+      function getEcgOffset(t) {
+        const cycleTime = 750;
+        const localT = t % cycleTime;
+        let val = 0;
+        if (localT > 100 && localT < 220) val -= 8 * Math.sin(((localT - 100) / 120) * Math.PI);
+        else if (localT >= 260 && localT < 290) val += 12;
+        else if (localT >= 290 && localT < 340) val -= 130 * Math.sin(((localT - 290) / 50) * Math.PI);
+        else if (localT >= 340 && localT < 380) val += 28 * Math.sin(((localT - 340) / 40) * Math.PI);
+        else if (localT >= 460 && localT < 640) val -= 18 * Math.sin(((localT - 460) / 180) * Math.PI);
+        return val;
+      }
+
+      let started = false;
+      for (let x = 0; x <= canvas.width; x += 4) {
+        const t = x * 2.2 + timeShift;
+        const y = ecgY + getEcgOffset(t);
+        if (!started) { ctx.moveTo(x, y); started = true; }
+        else { ctx.lineTo(x, y); }
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      let currentY = y;
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        if (context.measureText(testLine).width > maxWidth && n > 0) {
+          context.fillText(line, x, currentY);
+          line = words[n] + ' ';
+          currentY += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      context.fillText(line, x, currentY);
+    }
+
+    // ============================================================
+    // ANIMATION LOOP
+    // ============================================================
+    function startAnimationLoop() {
+      if (animationId) cancelAnimationFrame(animationId);
+      lastFrameTimestamp = 0;
+
+      function loop(timestamp) {
+        if (!lastFrameTimestamp) lastFrameTimestamp = timestamp;
+        const delta = Math.min(timestamp - lastFrameTimestamp, 100);
+        lastFrameTimestamp = timestamp;
+
+        storyClockMs += delta;
+        idleClockMs  += delta;
+
+        renderFrame(storyClockMs, idleClockMs);
+
+        if (currentMode === 'video') {
+          animationId = requestAnimationFrame(loop);
+        } else {
+          animationId = null;
+        }
+      }
+      animationId = requestAnimationFrame(loop);
+    }
+
+    function stopAnimationLoop() {
+      if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    }
+
+    function restartCinematic() {
+      storyClockMs = 0;
+      idleClockMs = 0;
+      lastFrameTimestamp = 0;
+      randomizeClipEffect(); // Pick a fresh random entrance effect for the media clip
+      startAnimationLoop();
+    }
+
+    // ============================================================
+    // MUTE
+    // ============================================================
+    muteToggleBtn.addEventListener('click', () => {
+      if (!userVideo) return;
+      userVideo.muted = !userVideo.muted;
+      muteToggleBtn.textContent = userVideo.muted ? '🔇 Unmute' : '🔊 Mute';
+      muteToggleBtn.classList.toggle('muted', userVideo.muted);
+    });
+
+    // ============================================================
+    // MEDIA SELECT
+    // ============================================================
+    function handleMediaSelect(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      photoOffsetX = 0;
+      photoOffsetY = 0;
+      photoScale = 1;
+      zoomRange.value = 1;
+      zoomValue.textContent = '1.0×';
+      lastRecordedVideoBlob = null;
+
+      const isVideo = file.type.startsWith('video/') ||
+                     (file.name && /\.(mp4|mov|m4v|3gp|avi|mkv)$/i.test(file.name));
+
+      if (isVideo) {
+        if (userVideo) {
+          try { userVideo.pause(); } catch(_) {}
+          if (userVideo.src) URL.revokeObjectURL(userVideo.src);
+          userVideo.src = '';
+          userVideo = null;
+        }
+        stopAnimationLoop();
+
+        const videoUrl = URL.createObjectURL(file);
+        userVideo = document.createElement('video');
+        userVideo.src = videoUrl;
+        userVideo.loop = true;
+        userVideo.muted = true;
+        userVideo.playsInline = true;
+        userVideo.setAttribute('playsinline', '');
+        userVideo.setAttribute('webkit-playsinline', '');
+        userVideo.preload = 'auto';
+        userVideo.load();
+
+        userImage = null;
+        muteToggleBtn.classList.add('visible');
+        muteToggleBtn.textContent = '🔇 Unmute';
+        muteToggleBtn.classList.add('muted');
+
+        const kickstart = () => {
+          if (currentMode === 'video') restartCinematic();
+          const p = userVideo.play();
+          if (p && typeof p.catch === 'function') p.catch(() => {});
+        };
+        userVideo.onloadeddata = kickstart;
+        userVideo.oncanplay = kickstart;
+        userVideo.onerror = () => alert('Unable to load the selected video format. Try a standard MP4/MOV clip.');
+      } else {
+        if (userVideo) {
+          try { userVideo.pause(); } catch(_) {}
+          if (userVideo.src) URL.revokeObjectURL(userVideo.src);
+          userVideo.src = '';
+          userVideo = null;
+        }
+        stopAnimationLoop();
+        muteToggleBtn.classList.remove('visible');
+        videoStatus.classList.remove('visible');
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          userImage = new Image();
+          userImage.onload = () => {
+            if (currentMode === 'video') {
+              restartCinematic();
+            } else {
+              scheduleDrawOnce();
+            }
+          };
+          userImage.onerror = () => alert('Unable to load the selected image. Please try a different file.');
+          userImage.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      setTimeout(() => {
+        cameraInput.value = '';
+        galleryInput.value = '';
+      }, 500);
+    }
+
+    function updateInputAttributes() {
+      if (currentMode === 'image') {
+        cameraInput.setAttribute('accept', 'image/*');
+        cameraInput.setAttribute('capture', 'environment');
+        galleryInput.setAttribute('accept', 'image/*');
+        galleryInput.removeAttribute('capture');
+      } else {
+        cameraInput.setAttribute('accept', 'video/*');
+        cameraInput.setAttribute('capture', 'camcorder');
+        galleryInput.setAttribute('accept', 'video/*');
+        galleryInput.removeAttribute('capture');
+      }
+    }
+    updateInputAttributes();
+
+    cameraInput.addEventListener('change', handleMediaSelect);
+    galleryInput.addEventListener('change', handleMediaSelect);
+
+    cameraBtn.addEventListener('click', () => {
+      cameraInput.setAttribute('capture', currentMode === 'image' ? 'environment' : 'camcorder');
+      cameraInput.click();
+    });
+    galleryBtn.addEventListener('click', () => {
+      galleryInput.removeAttribute('capture');
+      galleryInput.click();
+    });
+
+    // ============================================================
+    // DRAG / PINCH
+    // ============================================================
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - photoOffsetX;
+        startY = e.touches[0].clientY - photoOffsetY;
+        initialPinchDist = null;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        initialPinchDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        initialScale = photoScale;
+      }
+      e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (isDragging && e.touches.length === 1) {
+        photoOffsetX = e.touches[0].clientX - startX;
+        photoOffsetY = e.touches[0].clientY - startY;
+      } else if (e.touches.length === 2 && initialPinchDist !== null) {
+        const d = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        photoScale = Math.max(0.5, Math.min(3.0, initialScale * (d / initialPinchDist)));
+        zoomRange.value = photoScale;
+        zoomValue.textContent = photoScale.toFixed(1) + '×';
+      }
+      if (currentMode === 'image') scheduleDrawOnce();
+      e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) initialPinchDist = null;
+      if (e.touches.length === 0) isDragging = false;
+      e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchcancel', () => { isDragging = false; initialPinchDist = null; });
+
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - photoOffsetX;
+      startY = e.clientY - photoOffsetY;
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      photoOffsetX = e.clientX - startX;
+      photoOffsetY = e.clientY - startY;
+      if (currentMode === 'image') scheduleDrawOnce();
+    });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    zoomRange.addEventListener('input', (e) => {
+      photoScale = parseFloat(e.target.value);
+      zoomValue.textContent = photoScale.toFixed(1) + '×';
+      if (currentMode === 'image') scheduleDrawOnce();
+    });
+
+    // ============================================================
+    // MODE SWITCHING
+    // ============================================================
+    window.switchMode = function(mode) {
+      currentMode = mode;
+      modeImageBtn.classList.toggle('active', mode === 'image');
+      modeVideoBtn.classList.toggle('active', mode === 'video');
+
+      videoStatus.classList.remove('visible');
+      statusSpinner.classList.remove('active');
+
+      if (mode === 'image') {
+        stopAnimationLoop();
+        cameraBtnText.textContent = 'Take Photo';
+        galleryBtnText.textContent = 'Choose Photo';
+        mediaTypeBadge.textContent = 'Photo';
+        muteToggleBtn.classList.remove('visible');
+        if (userVideo) { try { userVideo.pause(); } catch(_) {} }
+        scheduleDrawOnce();
+      } else {
+        cameraBtnText.textContent = 'Record Video';
+        galleryBtnText.textContent = 'Choose Video';
+        mediaTypeBadge.textContent = 'Video';
+        userImage = null;
+        restartCinematic();
+        if (userVideo) {
+          muteToggleBtn.classList.add('visible');
+          const p = userVideo.play();
+          if (p && typeof p.catch === 'function') p.catch(() => {});
+        }
+      }
+
+      updateInputAttributes();
+      cameraInput.value = '';
+      galleryInput.value = '';
+    };
+
+    // ============================================================
+    // SAVE
+    // ============================================================
+    actionSaveBtn.addEventListener('click', async () => {
+      const shareText = `World Heart Day 2026 · ${whdSlogans[currentSloganIndex]} #DontMissABeat #WorldHeartDay`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try { await navigator.clipboard.writeText(shareText); } catch(_) {}
+      }
+
+      if (currentMode === 'image') {
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'world-heart-day-2026-story.png';
+        link.href = dataUrl;
+        link.click();
+        alert('✨ Photo saved to your device! Campaign hashtags have also been copied to your clipboard.');
+      } else {
+        if (!lastRecordedVideoBlob) {
+          alert('Please tap "Share" first to record your 10-second story video.');
+          return;
+        }
+        const url = URL.createObjectURL(lastRecordedVideoBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'world-heart-day-2026-story.mp4';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+        alert('✨ Video saved to your device! Campaign hashtags have also been copied to your clipboard.');
+      }
+    });
+
+    // ============================================================
+    // IMAGE SHARE
+    // ============================================================
+    async function shareImage(shareText) {
+      const dataUrl = canvas.toDataURL('image/png');
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], 'world-heart-day-2026-story-3-4.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ title: 'World Heart Day 2026 Story', text: shareText, files: [file] });
+        } catch (err) {
+          if (err.name !== 'AbortError') console.warn('Share failed', err);
+        }
+      } else {
+        const link = document.createElement('a');
+        link.download = 'world-heart-day-2026-story-3-4.png';
+        link.href = dataUrl;
+        link.click();
+        alert('Direct sharing is not supported on this browser. Your story image has been downloaded instead.');
+      }
+    }
+
+    // ============================================================
+    // VIDEO RECORDING
+    // ============================================================
+    function pickSupportedMime() {
+      const c = [
+        'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+        'video/mp4',
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm'
+      ];
+      for (const m of c) {
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported(m)) return m;
+      }
+      return '';
+    }
+
+    async function recordStoryVideo() {
+      if (!window.MediaRecorder || !canvas.captureStream) {
+        alert('Video recording is not supported on this browser.');
+        return null;
+      }
+
+      storyClockMs = 0;
+      idleClockMs = 0;
+      lastFrameTimestamp = 0;
+      randomizeClipEffect();
+      if (!animationId) startAnimationLoop();
+
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      const canvasStream = canvas.captureStream(TARGET_FPS);
+
+      let combinedStream;
+      let audioCtx = null;
+      try {
+        if (userVideo && !userVideo.muted) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') { try { await audioCtx.resume(); } catch(_) {} }
+          const source = audioCtx.createMediaElementSource(userVideo);
+          const dest = audioCtx.createMediaStreamDestination();
+          source.connect(dest);
+          source.connect(audioCtx.destination);
+          combinedStream = new MediaStream([
+            ...canvasStream.getVideoTracks(),
+            ...dest.stream.getAudioTracks()
+          ]);
+        } else {
+          combinedStream = new MediaStream([...canvasStream.getVideoTracks()]);
+        }
+      } catch (_) {
+        combinedStream = new MediaStream([...canvasStream.getVideoTracks()]);
+      }
+
+      const mime = pickSupportedMime();
+      let recorder;
+      try {
+        recorder = mime
+          ? new MediaRecorder(combinedStream, { mimeType: mime, videoBitsPerSecond: 6_000_000 })
+          : new MediaRecorder(combinedStream, { videoBitsPerSecond: 6_000_000 });
+      } catch (err) {
+        console.error(err);
+        alert('Could not start recorder: ' + err.message);
+        return null;
+      }
+
+      const chunks = [];
+      const done = new Promise((resolve) => {
+        recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+        recorder.onstop = () => {
+          if (audioCtx) { try { audioCtx.close(); } catch(_) {} }
+          const type = mime || (chunks[0] && chunks[0].type) || 'video/webm';
+          resolve(new Blob(chunks, { type }));
+        };
+        recorder.onerror = () => resolve(new Blob(chunks, { type: mime || 'video/webm' }));
+      });
+
+      storyClockMs = 0;
+      idleClockMs = 0;
+      randomizeClipEffect();
+      if (userVideo) {
+        try { userVideo.currentTime = 0; } catch(_) {}
+        const p = userVideo.play();
+        if (p && typeof p.catch === 'function') p.catch(() => {});
+      }
+
+      recorder.start(100);
+      isRecording = true;
+
+      await new Promise(r => setTimeout(r, T.TOTAL));
+      isRecording = false;
+
+      if (recorder.state !== 'inactive') recorder.stop();
+      return await done;
+    }
+
+    async function executeVideoShare(blob, shareText) {
+      const ext = blob.type.includes('mp4') ? 'mp4' : 'webm';
+      const videoFile = new File([blob], `world-heart-day-2026-story-3-4.${ext}`, { type: blob.type || 'video/mp4' });
+
+      if (navigator.canShare && navigator.canShare({ files: [videoFile] })) {
+        try {
+          await navigator.share({
+            title: 'World Heart Day 2026 Story Video',
+            text: shareText,
+            files: [videoFile]
+          });
+          statusText.textContent = 'Shared successfully!';
+          setTimeout(() => videoStatus.classList.remove('visible'), 3000);
+        } catch (err) {
+          if (err.name !== 'AbortError') console.warn('Share failed', err);
+          videoStatus.classList.remove('visible');
+        }
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `world-heart-day-2026-story-3-4.${ext}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+        statusText.textContent = 'Direct sharing not supported; video saved to device!';
+        setTimeout(() => videoStatus.classList.remove('visible'), 4000);
+      }
+    }
+
+    actionShareBtn.addEventListener('click', async () => {
+      const shareText = `World Heart Day 2026 · ${whdSlogans[currentSloganIndex]} #DontMissABeat #WorldHeartDay`;
+
+      if (currentMode === 'image') {
+        await shareImage(shareText);
+        return;
+      }
+
+      if (!window.MediaRecorder) {
+        alert('Video recording is not supported on this browser.');
+        return;
+      }
+
+      if (lastRecordedVideoBlob) {
+        await executeVideoShare(lastRecordedVideoBlob, shareText);
+        return;
+      }
+
+      videoStatus.classList.add('visible');
+      statusSpinner.classList.add('active');
+      statusText.textContent = 'Recording 10s cinematic story... Please wait.';
+      actionShareBtn.disabled = true;
+
+      try {
+        const blob = await recordStoryVideo();
+        if (!blob || blob.size === 0) throw new Error('Recording produced an empty file.');
+        lastRecordedVideoBlob = blob;
+        statusSpinner.classList.remove('active');
+        statusText.textContent = 'Ready! Opening share dialog...';
+        actionShareBtn.disabled = false;
+        await executeVideoShare(blob, shareText);
+      } catch (err) {
+        console.error(err);
+        statusSpinner.classList.remove('active');
+        videoStatus.classList.remove('visible');
+        actionShareBtn.disabled = false;
+        alert('Video processing error: ' + err.message);
+      }
+    });
+
+    // ============================================================
+    // MISC GUARDS
+    // ============================================================
+    document.getElementById('canvasFrame').addEventListener('touchmove', (e) => {
+      if (e.target === canvas) e.preventDefault();
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) e.preventDefault();
+      lastTouchEnd = now;
+    }, { passive: false });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (userVideo) { try { userVideo.pause(); } catch(_) {} }
+        stopAnimationLoop();
+      } else {
+        if (currentMode === 'video') {
+          startAnimationLoop();
+          if (userVideo) {
+            const p = userVideo.play();
+            if (p && typeof p.catch === 'function') p.catch(() => {});
+          }
+        } else {
+          scheduleDrawOnce();
+        }
+      }
+    });
+
+    // ============================================================
+    // FONT PRELOAD
+    // ============================================================
+    async function preloadFonts() {
+      if (!document.fonts || !document.fonts.load) return;
+      const probes = [
+        '900 48px "AppSans"',
+        '900 48px "SloganFont"',
+        '700 70px "CustomHandwritten"',
+        '900 22px "HashtagFont"'
+      ];
+      try {
+        await Promise.all(probes.map(p => document.fonts.load(p)));
+        await document.fonts.ready;
+      } catch (_) {}
+    }
+
+    // ============================================================
+    // BOOT
+    // ============================================================
+    (async function boot() {
+      await preloadFonts();
+      scheduleDrawOnce();
+    })();
+
+    window.addEventListener('load', () => { scheduleDrawOnce(); });
+
+  })();
+</script>
+</body>
+</html>
